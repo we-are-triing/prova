@@ -1,11 +1,15 @@
 const glob = require('glob');
+const ItemTemplate = require('../templates/item.js');
+const path = require('path');
+const express = require('express');
 class Storybook {
-    constructor({stories, root = '', app, dir = ''}){
+    constructor({stories, routeRoot = '', app, dir = '', pathToElements='/elements'}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
-        this.root = this.trimSlash(root);
+        this.routeRoot = this.trimSlash(routeRoot);
         this.dir = this.trimSlash(dir);
+        this.pathToElements = this.trimSlash(pathToElements)
         this.app = app;
 
         this.assignRoutes();
@@ -41,17 +45,28 @@ class Storybook {
         .then(values => values.reduce( (a,n) => [...a,...n] ).map( storyPath => require(`${this.dir}/${storyPath}`)))
         .catch( (reason) => console.log(reason));
     }
+    navigateToStory({elementName,storyName,res}){
+        //TODO: This is assuming my file structure, which is ok for now.
+        //TODO: elements root will need to allow for split areas and elements not in the same area, but for now.
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, routeRoot: this.routeRoot});
+        res.send(itemTemplate.render());
+    }
     assignRoutes(){
-        this.app.get(`${this.root}/:element`, (req, res) => {
+        this.app.use(`${this.routeRoot}/elements`, express.static( path.join(__dirname, '../elements') ));
+        this.app.get(`${this.routeRoot}/:element`, (req, res) => {
             const {element} = req.params;
-            res.send('hi from storybook');
+            this.navigateToStory({elementName: element, storyName: 0, res});
         });
-        this.app.get(`${this.root}`, (req, res) => {
+        this.app.get(`${this.routeRoot}/:element/:story`, (req, res) => {
+            const {element,story} = req.params;
+            this.navigateToStory({element,story,res});
+        });
+        this.app.get(`${this.routeRoot}`, (req, res) => {
             if(this.stories.length === 0){
-                res.send('you need some elements!');
+                res.send('you need some stories!');
             }
             else {
-                res.redirect(`http://localhost:8080/${this.root}/${this.stories[0].name}`);
+                res.redirect(`http://localhost:8080/${this.routeRoot}/${this.stories[0].name}`);
             }
         })
     }
@@ -65,9 +80,12 @@ module.exports = Storybook;
             - get a list of story files.
             - what port to run on
             - stylesheet to use to style storybook
+            - Where your polyfills are
 
         - Config the elements
             - global stylesheets to use for the elements
+
+
 */
 
 // I want to have the server get to any page, but I do I want to have all changes go through the server, I could make the request super fast?

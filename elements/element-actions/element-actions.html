@@ -1,0 +1,23 @@
+<template>
+    <style>
+        :host {
+            --divider-color: #ddd;
+            display: block;
+        }
+        div {
+            display: grid;
+            grid-template-rows: 2fr 1fr;
+            height: 100%;
+            width: 100%;
+            border-right: 2px solid var(--divider-color);
+        }
+        ::slotted(:first-child){
+            border-bottom: 2px solid var(--divider-color);
+        }
+    </style>
+    <div>
+        <slot></slot>
+    </div>
+</template>
+<link rel="import" href="../root-element/root-element.html" />
+<script src="./element-actions.js"></script>

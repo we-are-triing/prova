@@ -1,0 +1,52 @@
+<template>
+    <style>
+        :host {
+            display: block;
+            box-sizing: border-box;
+            --main-color: #69f;
+            --secondary-color: #fff;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: stretch;
+            padding: 0.4em;
+            overflow: auto;
+            height: 90%;
+        }
+        header {
+            height: 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--main-color);
+            color: var(--secondary-color);
+        }
+        .search {
+            height: 5%;
+        }
+        .search input {
+            display: block;
+            height: 100%;
+            width: 100%;
+            border: 1px solid #0f0;
+            font-size: 1.6em;
+            outline: none;
+        }
+    </style>
+    <header>
+        Element Storybook
+    </header>
+    <section class="search">
+        <input type="search" placeholder="search" />
+    </section>
+    <main>
+        <slot></slot>
+    </main>
+</template>
+<link rel="import" href="../root-element/root-element.html" />
+<script src="./element-list.js"></script>
