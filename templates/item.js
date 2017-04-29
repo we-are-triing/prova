@@ -6,7 +6,6 @@ class ItemTemplate extends BaseTemplate {
         this.elementList = elementList;
         this.elementName = elementName;
         this.element = this.findByName(this.elementList, elementName);
-        console.log(this.element);
         if(typeof storyName === "number"){
             this.story = this.element.stories[storyName];
             this.storyName = this.story.name;
@@ -55,7 +54,7 @@ class ItemTemplate extends BaseTemplate {
                     }
                 </element-list>
                 <element-props>
-                    
+
                 </element-props>
             </element-actions>
             <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" >${this.story.markup}</element-display>

@@ -11,6 +11,10 @@ class ElementList extends RootElement {
         }
         this.addEventListener('elementClick', this.handleElementClick.bind(this));
         this.elems.stories.addEventListener('click', this.handleStoriesClick.bind(this));
+        this.elems.close.addEventListener('click', this.handleClose.bind(this));
+    }
+    handleClose(e){
+        this.elems.overlay.classList.remove('active');
     }
     handleElementClick(e){
         this.elems.overlay.classList.add('active');
