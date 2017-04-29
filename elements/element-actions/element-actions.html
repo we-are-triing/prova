@@ -4,8 +4,9 @@
             --divider-color: #ddd;
             display: block;
         }
-        div {
+        .container {
             display: grid;
+            box-sizing: border-box;
             grid-template-rows: 2fr 1fr;
             height: 100%;
             width: 100%;
@@ -15,7 +16,7 @@
             border-bottom: 2px solid var(--divider-color);
         }
     </style>
-    <div>
+    <div class="container">
         <slot></slot>
     </div>
 </template>

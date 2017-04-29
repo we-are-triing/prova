@@ -3,5 +3,6 @@ class ElementActions extends RootElement {
         super();
         this.buildShadowRoot();
     }
+
 }
 RootElement.registerElement('element-actions', ElementActions);

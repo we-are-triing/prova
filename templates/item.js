@@ -6,6 +6,7 @@ class ItemTemplate extends BaseTemplate {
         this.elementList = elementList;
         this.elementName = elementName;
         this.element = this.findByName(this.elementList, elementName);
+        console.log(this.element);
         if(typeof storyName === "number"){
             this.story = this.element.stories[storyName];
             this.storyName = this.story.name;
@@ -37,14 +38,16 @@ class ItemTemplate extends BaseTemplate {
 
         return `
             <element-actions>
-                <!-- TODO: this can be customized -->
                 <element-list title="Element Storybook">
                     ${
                         this.elementList.map( (item) => (
                             `<element-item name="${item.name}">
+                                <element-properties>
+                                    ${this.addProps(item.props)}
+                                </element-properties>
                                 ${
                                     item.stories.map( (story) => (
-                                        `<element-story>${story.name}</element-story>`
+                                        `<element-story name="${story.name}">${story.markup}</element-story>`
                                     )).join('')
                                 }
                             </element-item>`
@@ -52,15 +55,16 @@ class ItemTemplate extends BaseTemplate {
                     }
                 </element-list>
                 <element-props>
-                    ${
-                        this.element.props.map( (prop) => (
-                            `<prop-item${ prop.values.length > 0 ? ` values="${prop.values}"` : ''}>${prop.name}</prop-item>`
-                        )).join('')
-                    }
+                    
                 </element-props>
             </element-actions>
             <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" >${this.story.markup}</element-display>
         `;
+    }
+    addProps(props){
+        return props.map( (prop) => (
+            `<prop-item${ prop.values.length > 0 ? ` values="${prop.values}"` : ''}>${prop.name}</prop-item>`
+        )).join('')
     }
 }
 module.exports = ItemTemplate;

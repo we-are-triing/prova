@@ -6,9 +6,27 @@ class ElementDisplay extends RootElement {
         this.cleanIframe();
         this.addImports();
         document.body.addEventListener('propUpdate',this.handleUpdatedProp.bind(this));
+        document.body.addEventListener('newElement',this.handleNewElement.bind(this));
     }
     handleUpdatedProp(e){
+        const {prop,value} = e.detail;
+        const {targetElement} = this.elems;
 
+        if(prop.startsWith('--')){
+            targetElement.style.setProperty(prop, value);
+        }
+        else if(prop === 'slot'){
+            targetElement.innerHTML = value;
+        }
+        else {
+            targetElement[prop] = value;
+        }
+    }
+    handleNewElement(e){
+        this.elems.iframeDoc.body.innerHTML = e.detail.markup;
+        this.elems.targetElement = this.elems.iframeDoc.querySelector(e.detail.element);
+        // update the props
+        // change out hte innerTHML and update the URL
     }
     addLocalElems(){
         this.elems = {
@@ -16,7 +34,7 @@ class ElementDisplay extends RootElement {
         }
         this.elems.iframeDoc = this.elems.iframe.contentWindow.document;
         this.elems.iframeDoc.body.innerHTML = this.innerHTML;
-        this.elems.targetElement = this.elems.iframeDoc.querySelector(this.element);
+        this.elems.targetElement = this.elems.iframeDoc.querySelector(this.children[0].localName);
     }
     addImports(){
         this.elements.split(',').forEach( (elem) => {

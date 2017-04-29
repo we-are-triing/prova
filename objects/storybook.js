@@ -59,7 +59,7 @@ class Storybook {
         });
         this.app.get(`${this.routeRoot}/:element/:story`, (req, res) => {
             const {element,story} = req.params;
-            this.navigateToStory({element,story,res});
+            this.navigateToStory({elementName: element,storyName: story,res});
         });
         this.app.get(`${this.routeRoot}`, (req, res) => {
             if(this.stories.length === 0){

@@ -3,18 +3,28 @@ class ElementItem extends RootElement {
         super();
         this.buildShadowRoot();
         this.elems = {
-            name: this.shadowRoot.querySelector('span')
+            block: this.shadowRoot.querySelector('.block')
         }
-        this.elems.name.dataset.element = this.name;
+        this.elems.block.dataset.element = this.name;
+        this.addEventListener('click', this.handleBlockClick.bind(this));
     }
-    get name(){
+    handleBlockClick(e) {
+        this.dispatchEvent(new CustomEvent('elementClick', {
+            detail: {
+                stories: [...this.children].slice(1).map( (story) => story.cloneNode(true)),
+                element: this.name
+            },
+            bubbles: true,
+            cancelable: false
+        }));
+    }
+    get name() {
         return this.getAttribute('name');
     }
-    set name(val){
-        if(val){
+    set name(val) {
+        if (val) {
             this.setAttribute('name', val);
-        }
-        else {
+        } else {
             this.removeAttribute('name');
         }
     }

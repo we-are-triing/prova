@@ -8,7 +8,7 @@
             font-size: 0.8em;
             width: calc(50% - 1px);
         }
-        span {
+        .block {
             display: block;
             width: 100%;
             padding-bottom: 100%;
@@ -18,7 +18,7 @@
             overflow: hidden;
             position: relative;
         }
-        span::before{
+        .block::before{
             content: attr(data-element);
             display: block;
             position: absolute;
@@ -31,7 +31,7 @@
             justify-content: center;
         }
     </style>
-    <span></span>
+    <span class="block"></span>
 </template>
 <link rel="import" href="../root-element/root-element.html" />
 <script src="./element-item.js"></script>
