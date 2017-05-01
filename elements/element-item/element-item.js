@@ -11,7 +11,7 @@ class ElementItem extends RootElement {
     handleBlockClick(e) {
         this.dispatchEvent(new CustomEvent('elementClick', {
             detail: {
-                stories: [...this.children].slice(1).map( (story) => story.cloneNode(true)),
+                stories: [].slice.apply(this.children).slice(1).map( (story) => story.cloneNode(true)),
                 element: this.name
             },
             bubbles: true,
@@ -26,6 +26,16 @@ class ElementItem extends RootElement {
             this.setAttribute('name', val);
         } else {
             this.removeAttribute('name');
+        }
+    }
+    get slotElements() {
+        return this.getAttribute('slot-elements');
+    }
+    set slotElements(val) {
+        if (val) {
+            this.setAttribute('slot-elements', val);
+        } else {
+            this.removeAttribute('slot-elements');
         }
     }
     get hidden() {

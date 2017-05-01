@@ -1,6 +1,6 @@
 const BaseTemplate = require('./base.js');
 class ItemTemplate extends BaseTemplate {
-    constructor({elementList, elementName, storyName, elementsRoot, routeRoot}){
+    constructor({elementList, elementName, storyName, elementsRoot, routeRoot, polyfills}){
         super();
 
         this.elementList = elementList;
@@ -14,6 +14,7 @@ class ItemTemplate extends BaseTemplate {
             this.story = this.findByName(this.element.stories, storyName);
         }
         this.elementsRoot = elementsRoot;
+        this.polyfills = polyfills;
         this.routeRoot = routeRoot;
 
         this.createParts();
@@ -40,7 +41,7 @@ class ItemTemplate extends BaseTemplate {
                 <element-list title="Element Storybook">
                     ${
                         this.elementList.map( (item) => (
-                            `<element-item name="${item.name}">
+                            `<element-item name="${item.name}" ${item.slotElements.length > 0 ? `slot-elements="${item.slotElements.join(",")}"`:``}>
                                 <element-properties>
                                     ${this.addProps(item.props)}
                                 </element-properties>
@@ -57,7 +58,7 @@ class ItemTemplate extends BaseTemplate {
 
                 </element-props>
             </element-actions>
-            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" >${this.story.markup}</element-display>
+            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.routeRoot}" polyfills="${this.polyfills}">${this.story.markup}</element-display>
         `;
     }
     addProps(props){

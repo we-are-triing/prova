@@ -13,7 +13,7 @@ class ElementProps extends RootElement {
     populateForm(){
         this.elems.container.innerHTML = `
             <ul>
-                ${[...this.children].map((child) => `
+                ${[].slice.apply(this.children).map((child) => `
                     <li>
                         <label for="${child.innerText}">${child.innerText}</label>
                         ${this.renderInput(child)}
@@ -24,7 +24,6 @@ class ElementProps extends RootElement {
 
     }
     handleNewElement(e){
-        console.log(e.detail.props);
         this.innerHTML = '';
         e.detail.props.forEach( (prop) => this.appendChild(prop));
         this.populateForm();

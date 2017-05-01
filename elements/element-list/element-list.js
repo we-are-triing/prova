@@ -45,18 +45,18 @@ class ElementList extends RootElement {
     }
     handleStoriesClick(e){
         //dispatch a story click
-        console.log(this.querySelectorAll(`element-item[name="${this.elems.title.innerText}"] element-properties prop-item `));
-        let props = [].slice.apply(this.querySelectorAll(`element-item[name="${this.elems.title.innerText}"] element-properties prop-item `))
+        let elemItem = this.querySelector(`element-item[name="${this.elems.title.innerText}"]`);
+        let props = [].slice.apply(elemItem.querySelectorAll(`element-properties prop-item `))
             // .map((elem) => ({ values: elem.values, name: elem.innerText }) );
             .map((elem) => elem.cloneNode(true) )
 
-        console.log(this.elems.title.innerText);
         this.dispatchEvent(new CustomEvent('newElement', {
             detail: {
                 element: this.elems.title.innerText,
                 story: e.target.name,
                 markup: e.target.innerHTML,
-                props: props
+                props: props,
+                slotElements: elemItem.slotElements
             },
             bubbles: true,
             cancelable: false

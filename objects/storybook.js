@@ -3,13 +3,14 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, routeRoot = '', app, dir = '', pathToElements='/elements'}){
+    constructor({stories, routeRoot = '', app, dir = '', pathToElements='/elements', pathToPolyfills='/polyfills'}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
         this.routeRoot = this.trimSlash(routeRoot);
         this.dir = this.trimSlash(dir);
-        this.pathToElements = this.trimSlash(pathToElements)
+        this.pathToElements = this.trimSlash(pathToElements);
+        this.pathToPolyfills = this.trimSlash(pathToPolyfills);
         this.app = app;
 
         this.assignRoutes();
@@ -48,7 +49,7 @@ class Storybook {
     navigateToStory({elementName,storyName,res}){
         //TODO: This is assuming my file structure, which is ok for now.
         //TODO: elements root will need to allow for split areas and elements not in the same area, but for now.
-        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, routeRoot: this.routeRoot});
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, routeRoot: this.routeRoot, polyfills: this.pathToPolyfills});
         res.send(itemTemplate.render());
     }
     assignRoutes(){

@@ -20,10 +20,10 @@ class Story {
     }
     addSlotElement(name){
         if(Array.isArray(name)){
-            name.forEach( n => this.props.push(n) )
+            name.forEach( n => this.slotElements.push(n) )
         }
         else {
-            this.props.push(name);
+            this.slotElements.push(name);
         }
         return this;
     }

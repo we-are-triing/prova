@@ -3,10 +3,12 @@ class ElementDisplay extends RootElement {
         super();
         this.buildShadowRoot();
         this.addLocalElems();
+        this.addPolyfills();
         this.cleanIframe();
         this.addImports();
         document.body.addEventListener('propUpdate',this.handleUpdatedProp.bind(this));
         document.body.addEventListener('newElement',this.handleNewElement.bind(this));
+        window.onpopstate = this.handlePopState.bind(this);
     }
     handleUpdatedProp(e){
         const {prop,value} = e.detail;
@@ -22,11 +24,23 @@ class ElementDisplay extends RootElement {
             targetElement[prop] = value;
         }
     }
+    addPolyfills(){
+        const s = document.createElement('script');
+        s.src = `${this.polyfills}/webcomponents-loader.js`;
+        this.elems.iframeDoc.head.appendChild(s);
+    }
     handleNewElement(e){
         this.elems.iframeDoc.body.innerHTML = e.detail.markup;
         this.elems.targetElement = this.elems.iframeDoc.querySelector(e.detail.element);
-        // update the props
+        this.elements = `${e.detail.element},${e.detail.slotElements}`;
+        this.addImports();
+
         // change out hte innerTHML and update the URL
+        document.title = `${e.detail.element} - Element Storybook`;
+        window.history.pushState({"pageTitle":document.title},document.title, `${this.storybookroot}/${e.detail.element}/${e.detail.story}`);
+    }
+    handlePopState(){
+        //location.reload();
     }
     addLocalElems(){
         this.elems = {
@@ -37,6 +51,8 @@ class ElementDisplay extends RootElement {
         this.elems.targetElement = this.elems.iframeDoc.querySelector(this.children[0].localName);
     }
     addImports(){
+        this.elems.iframeDoc.head.querySelectorAll(`link[rel="import"]`).forEach((link) => link.remove());
+
         this.elements.split(',').forEach( (elem) => {
             let link = document.createElement('link');
             link.rel = "import";
@@ -75,6 +91,28 @@ class ElementDisplay extends RootElement {
         }
         else {
             this.removeAttribute('rootpath');
+        }
+    }
+    get storybookroot(){
+        return this.getAttribute('storybookroot');
+    }
+    set storybookroot(val){
+        if(val){
+            this.setAttribute('storybookroot', val);
+        }
+        else {
+            this.removeAttribute('storybookroot');
+        }
+    }
+    get polyfills(){
+        return this.getAttribute('polyfills');
+    }
+    set polyfills(val){
+        if(val){
+            this.setAttribute('polyfills', val);
+        }
+        else {
+            this.removeAttribute('polyfills');
         }
     }
 }
