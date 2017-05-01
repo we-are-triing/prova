@@ -7,11 +7,32 @@ class ElementList extends RootElement {
             overlay: this.shadowRoot.querySelector('.overlay'),
             close: this.shadowRoot.querySelector('.close'),
             title: this.shadowRoot.querySelector('.title'),
-            stories: this.shadowRoot.querySelector('.stories')
+            stories: this.shadowRoot.querySelector('.stories'),
+            search: this.shadowRoot.querySelector('.search input')
         }
         this.addEventListener('elementClick', this.handleElementClick.bind(this));
         this.elems.stories.addEventListener('click', this.handleStoriesClick.bind(this));
         this.elems.close.addEventListener('click', this.handleClose.bind(this));
+        this.elems.search.addEventListener('keyup', this.handleSearch.bind(this));
+        this.elems.search.addEventListener('change', this.handleSearch.bind(this));
+    }
+    handleSearch(e){
+
+        if(e.target.value){
+            [...this.querySelectorAll(`element-item`)].forEach( (child) => {
+                child.hidden = true;
+            });
+
+            if(e.target.value){
+                [...this.querySelectorAll(`element-item[name*=${e.target.value}]`)].forEach( (child) => {
+                    child.hidden = false;
+                });
+            }
+        }else {
+            [...this.querySelectorAll(`element-item`)].forEach( (child) => {
+                child.hidden = false;
+            });
+        }
     }
     handleClose(e){
         this.elems.overlay.classList.remove('active');

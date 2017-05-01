@@ -28,5 +28,15 @@ class ElementItem extends RootElement {
             this.removeAttribute('name');
         }
     }
+    get hidden() {
+        return this.hasAttribute('hidden');
+    }
+    set hidden(val) {
+        if (val) {
+            this.setAttribute('hidden', '');
+        } else {
+            this.removeAttribute('hidden');
+        }
+    }
 }
 RootElement.registerElement('element-item', ElementItem);
