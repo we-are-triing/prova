@@ -1,0 +1,79 @@
+<template>
+    <style>
+        :host {
+            display: block;
+            box-sizing: border-box;
+            --main-color: #69f;
+            --secondary-color: #fff;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            align-content: flex-start;
+            padding: 0.4em;
+            overflow: auto;
+            height: calc(100% - 4.4em);
+            position: relative;
+        }
+        header {
+            height: 2.4em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--main-color);
+            color: var(--secondary-color);
+            padding: 0.8em;
+        }
+        .close {
+            cursor: pointer;
+        }
+        .search {
+            height: 2em;
+        }
+        .search input {
+            display: block;
+            height: 100%;
+            width: 100%;
+            border: 1px solid var(--main-color);
+            font-size: 1em;
+            outline: none;
+            padding: 0.1em;
+        }
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: var(--secondary-color);
+
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+    <header>
+        Element Storybook
+    </header>
+    <section class="search">
+        <input type="search" placeholder="search" />
+    </section>
+    <main>
+        <slot></slot>
+        <div class="overlay">
+            <header>
+                <span class="title"></span>
+                <span class="close">x</span>
+            </header>
+            <section class="stories"></section>
+        </div>
+    </main>
+</template>
+<link rel="import" href="../root-element/root-element.html" />
+<script src="./element-list.js"></script>

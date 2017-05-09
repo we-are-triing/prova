@@ -1,0 +1,13 @@
+{
+  "name": "element-storybook",
+  "version": "1.0.0-alpha.1",
+  "description": "This is a development and testing environment for native components.",
+  "main": "index.js",
+  "repository": "https://github.com/LuceStudio/element-storybook.git",
+  "author": "Colt Pini <coltpini@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.2",
+    "glob": "^7.1.1"
+  }
+}
