@@ -1,6 +1,6 @@
 const BaseTemplate = require('./base.js');
 class ItemTemplate extends BaseTemplate {
-    constructor({elementList, elementName, storyName, elementsRoot, routeRoot, polyfills}){
+    constructor({elementList, elementName, storyName, elementsRoot, storybookRoot, polyfills}){
         super();
 
         this.elementList = elementList;
@@ -15,7 +15,7 @@ class ItemTemplate extends BaseTemplate {
         }
         this.elementsRoot = elementsRoot;
         this.polyfills = polyfills;
-        this.routeRoot = routeRoot;
+        this.storybookRoot = storybookRoot;
 
         this.createParts();
     }
@@ -55,10 +55,11 @@ class ItemTemplate extends BaseTemplate {
                     }
                 </element-list>
                 <element-props>
-
+                <!-- this needs to be based on the current item -->
+                    ${this.addProps(this.element.props)}
                 </element-props>
             </element-actions>
-            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.routeRoot}" polyfills="${this.polyfills}">${this.story.markup}</element-display>
+            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.storybookRoot}" polyfills="${this.polyfills}">${this.story.markup}</element-display>
         `;
     }
     addProps(props){

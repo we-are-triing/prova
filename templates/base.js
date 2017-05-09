@@ -21,12 +21,12 @@ class BaseTemplate {
                 <title>${this.head.title}</title>
                 ${this.head.content}
                 <link rel="stylesheet" href="${this.elementsRoot}/index.css" />
-                <link rel="stylesheet" href="${this.routeRoot}/elements/index.css" />
+                <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
                 <!-- TODO: where are these going to live, need to grab that -->
                 <script src="${this.polyfills}/webcomponents-loader.js"></script>
                 ${
                     this.parseElements(body).map( (name) => (
-                        `<link rel="import" href="${this.routeRoot}/elements/${name}/${name}.html">`
+                        `<link rel="import" href="${this.storybookRoot}/elements/${name}/${name}.html">`
                     )).join('')
                 }
             </head>

@@ -3,11 +3,11 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, routeRoot = '', app, dir = '', pathToElements='/elements', pathToPolyfills='/polyfills'}){
+    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills'}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
-        this.routeRoot = this.trimSlash(routeRoot);
+        this.storybookRoot = this.trimSlash(storybookRoot);
         this.dir = this.trimSlash(dir);
         this.pathToElements = this.trimSlash(pathToElements);
         this.pathToPolyfills = this.trimSlash(pathToPolyfills);
@@ -49,25 +49,25 @@ class Storybook {
     navigateToStory({elementName,storyName,res}){
         //TODO: This is assuming my file structure, which is ok for now.
         //TODO: elements root will need to allow for split areas and elements not in the same area, but for now.
-        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, routeRoot: this.routeRoot, polyfills: this.pathToPolyfills});
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills});
         res.send(itemTemplate.render());
     }
     assignRoutes(){
-        this.app.use(`${this.routeRoot}/elements`, express.static( path.join(__dirname, '../elements') ));
-        this.app.get(`${this.routeRoot}/:element`, (req, res) => {
+        this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../elements') ));
+        this.app.get(`${this.storybookRoot}/:element`, (req, res) => {
             const {element} = req.params;
             this.navigateToStory({elementName: element, storyName: 0, res});
         });
-        this.app.get(`${this.routeRoot}/:element/:story`, (req, res) => {
+        this.app.get(`${this.storybookRoot}/:element/:story`, (req, res) => {
             const {element,story} = req.params;
             this.navigateToStory({elementName: element,storyName: story,res});
         });
-        this.app.get(`${this.routeRoot}`, (req, res) => {
+        this.app.get(`${this.storybookRoot}`, (req, res) => {
             if(this.stories.length === 0){
                 res.send('you need some stories!');
             }
             else {
-                res.redirect(`http://localhost:8080/${this.routeRoot}/${this.stories[0].name}`);
+                res.redirect(`${this.storybookRoot}/${this.stories[0].name}`);
             }
         })
     }
