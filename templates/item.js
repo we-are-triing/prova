@@ -13,6 +13,7 @@ class ItemTemplate extends BaseTemplate {
             this.storyName = storyName;
             this.story = this.findByName(this.element.stories, storyName);
         }
+        console.log(this.story.name, this.storyName);
         this.elementsRoot = elementsRoot;
         this.polyfills = polyfills;
         this.storybookRoot = storybookRoot;
@@ -41,7 +42,12 @@ class ItemTemplate extends BaseTemplate {
                 <element-list title="Element Storybook">
                     ${
                         this.elementList.map( (item) => (
-                            `<element-item name="${item.name}" ${item.slotElements.length > 0 ? `slot-elements="${item.slotElements.join(",")}"`:``}>
+                            `<element-item
+                                name="${item.name}"
+                                ${item.slotElements.length > 0 ? `slot-elements="${item.slotElements.join(",")}"`:``}
+                                ${item.name === this.element.name ? ` active${this.story ? ` story="${this.story.name}"` : ``}` : ``}
+
+                                >
                                 <element-properties>
                                     ${this.addProps(item.props)}
                                 </element-properties>

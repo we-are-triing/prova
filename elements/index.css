@@ -1,9 +1,19 @@
+:root {
+    --es-color-100: #fff;
+    --es-color-200: #fafafa;
+    --es-color-300: #eee;
+    --es-color-400: #ddd;
+    --es-color-500: #555;
+    --es-color-600: RGB(252,96,32);
+}
+
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     box-sizing: border-box;
+    color: var(--es-color-500);
 }
 
 body {

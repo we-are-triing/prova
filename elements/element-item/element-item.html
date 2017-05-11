@@ -4,9 +4,8 @@
             display: block;
             box-sizing: border-box;
             text-align: center;
-            --item-color: #ccc;
             font-size: 0.8em;
-            width: calc(50% - 1px);
+
         }
         :host([hidden]){
             display: none;
@@ -17,9 +16,11 @@
             padding-bottom: 100%;
             margin-bottom: 1px;
             box-sizing: border-box;
-            background: var(--item-color);
+            background: var(--es-color-200);
+            border: 1px solid var(--es-color-400);
             overflow: hidden;
             position: relative;
+            border-radius: 0.5em;
         }
         .block::before{
             content: attr(data-element);
@@ -33,7 +34,10 @@
             align-items: center;
             justify-content: center;
         }
-
+        :host([active]) .block{
+            background: var(--es-color-600);
+            color: var(--es-color-100);
+        }
     </style>
     <span class="block"></span>
 </template>

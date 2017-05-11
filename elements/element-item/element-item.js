@@ -7,12 +7,16 @@ class ElementItem extends RootElement {
         }
         this.elems.block.dataset.element = this.name;
         this.addEventListener('click', this.handleBlockClick.bind(this));
+        if( this.hasAttribute('active') ) {
+            this.handleBlockClick(this.getAttribute('story'));
+        }
     }
-    handleBlockClick(e) {
-        this.dispatchEvent(new CustomEvent('elementClick', {
+    handleBlockClick(story) {
+        this.dispatchEvent(new CustomEvent('elementChange', {
             detail: {
                 stories: [].slice.apply(this.children).slice(1).map( (story) => story.cloneNode(true)),
-                element: this.name
+                element: this.name,
+                story
             },
             bubbles: true,
             cancelable: false

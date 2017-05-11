@@ -3,6 +3,15 @@
         :host {
             display: block;
         }
+        :host([active]){
+            color: var(--es-color-600);
+        }
+        span {
+            display: block;
+            border-bottom: 1px solid var(--es-color-300);
+            padding: 0.8em;
+            cursor: pointer;
+        }
     </style>
     <span></span>
 </template>
