@@ -48,8 +48,6 @@ class ElementList extends RootElement {
         let story;
         if(typeof e.detail.story === 'string'){
             story = [...e.detail.stories].find( s => s.getAttribute('name') === e.detail.story );
-            console.log( e.detail.stories, story, e.detail.story);
-            [...e.detail.stories].forEach( s => console.log(s.getAttribute('name')) );
         }
         else {
             story = e.detail.stories[0];

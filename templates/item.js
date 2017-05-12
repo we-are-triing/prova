@@ -13,7 +13,6 @@ class ItemTemplate extends BaseTemplate {
             this.storyName = storyName;
             this.story = this.findByName(this.element.stories, storyName);
         }
-        console.log(this.story.name, this.storyName);
         this.elementsRoot = elementsRoot;
         this.polyfills = polyfills;
         this.storybookRoot = storybookRoot;
