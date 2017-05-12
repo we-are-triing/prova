@@ -15,7 +15,6 @@ class ElementProps extends RootElement {
             <ul>
                 ${[].slice.apply(this.children).map((child) => `
                     <li>
-                        <label for="${child.innerText}">${child.innerText}</label>
                         ${this.renderInput(child)}
                     </li>
                 `).join('')}
@@ -31,20 +30,31 @@ class ElementProps extends RootElement {
         //TODO: I am not sure why I need this, child.values should work.
         let values = child.getAttribute('values');
         if(values && values === "bool"){
-            return `<input name="${child.innerText}" type="checkbox" />`
+            return `
+                <label for="${child.innerText}" data-type="checkbox">${child.innerText}</label> 
+                <input name="${child.innerText}" type="checkbox" />
+            `;
         }
         else if(values) {
             return `
+                <label for="${child.innerText}">${child.innerText}</label>
                 <select name="${child.innerText}">
                     ${values.split(",").map( (item ) => `<option>${item}</option>`).join('')}
+                </select>
             `
         }
 
         if(child.innerText === 'slot'){
-            return `<textarea name="${child.innerText}"></textarea>`
+            return `
+                <label for="${child.innerText}">${child.innerText}</label>
+                <textarea name="${child.innerText}"></textarea>
+            `
         }
 
-        return `<input name="${child.innerText}" type="text" />`
+        return `
+            <label for="${child.innerText}">${child.innerText}</label>
+            <input name="${child.innerText}" type="text" />
+        `
 
     }
     handleChange(e){

@@ -3,8 +3,9 @@
     --es-color-200: #fafafa;
     --es-color-300: #eee;
     --es-color-400: #ddd;
-    --es-color-500: #555;
-    --es-color-600: RGB(252,96,32);
+    --es-color-500: #aaa;
+    --es-color-600: #555;
+    --es-color-700: RGB(252,96,32);
 }
 
 html, body {
@@ -13,7 +14,7 @@ html, body {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-    color: var(--es-color-500);
+    color: var(--es-color-600);
 }
 
 body {

@@ -3,21 +3,46 @@
         :host {
             display: block;
         }
+        * {
+            box-sizing: border-box;
+        }
         div {
             height: 100%;
             overflow: auto;
+            border: 1px solid var(--es-color-400);
+            /*border-top: none;*/
+            background: var(--es-color-100);
         }
         div ul {
             display: block;
             list-style: none;
             margin: 0;
-            padding: 1em;
+            padding: 0;
         }
         li {
             margin-bottom: 1em;
+            /*border-bottom: 1px solid var(--es-color-300);*/
+            padding: 0.2em 0.6em;
         }
-        label {
+        label:not([data-type="checkbox"]) {
+            font-size: 0.8em;
+            color: var(--es-color-500);
+        }
+        input[type="checkbox"]{
+            float: right;
+            margin-right: 0.6em;
+            border: none;
+            outline: none;
+            background: var(--es-color-300);
+        }
+        input:not([type="checkbox"]), select, textarea {
             display: block;
+            width: 100%;
+            font-size: 1em;
+            padding: 0.2em 0.4em;
+            border: none;
+            outline: none;
+            background: var(--es-color-300);
         }
     </style>
     <div></div>
