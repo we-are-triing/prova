@@ -53,7 +53,8 @@ class Storybook {
         res.send(itemTemplate.render());
     }
     assignRoutes(){
-        this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../elements') ));
+        this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../client/elements') ));
+        this.app.use(`${this.storybookRoot}/store`, express.static( path.join(__dirname, '../client/store') ));
         this.app.get(`${this.storybookRoot}/:element`, (req, res) => {
             const {element} = req.params;
             this.navigateToStory({elementName: element, storyName: 0, res});

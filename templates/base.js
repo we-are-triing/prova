@@ -1,6 +1,7 @@
 class BaseTemplate {
     constructor(){
         this.head = {};
+        this.storehouse = {};
     }
     render(){
         const body = `
@@ -22,7 +23,16 @@ class BaseTemplate {
                 ${this.head.content}
                 <link rel="stylesheet" href="${this.elementsRoot}/index.css" />
                 <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
-                <!-- TODO: where are these going to live, need to grab that -->
+
+                <script src="${this.storybookRoot}/store/store.js"></script>
+                <script>
+                    let storehouse = new Storehouse(${JSON.stringify(this.storehouse)});
+                    window.addEventListener('WebComponentsReady', (e) => {
+                        console.log('components are ready');
+                        storehouse.dispatchAll();
+                    });
+                </script>
+
                 <script src="${this.polyfills}/webcomponents-loader.js"></script>
                 ${
                     this.parseElements(body).map( (name) => (
@@ -32,6 +42,7 @@ class BaseTemplate {
             </head>
             <body>
                 ${body}
+
             </body>
         </html>
         `;

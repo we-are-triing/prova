@@ -1,4 +1,5 @@
 const BaseTemplate = require('./base.js');
+const parse5 = require('parse5');
 class ItemTemplate extends BaseTemplate {
     constructor({elementList, elementName, storyName, elementsRoot, storybookRoot, polyfills}){
         super();
@@ -16,7 +17,6 @@ class ItemTemplate extends BaseTemplate {
         this.elementsRoot = elementsRoot;
         this.polyfills = polyfills;
         this.storybookRoot = storybookRoot;
-
         this.createParts();
     }
     findByName(list, name){
@@ -25,17 +25,47 @@ class ItemTemplate extends BaseTemplate {
     createParts(){
         this.head.title = `${this.elementName} - Element Storybook`;
         this.head.content = ``;
+        this.storehouse = this.populateStorehouse();
         this.page = this.populatePage();
     }
-    populatePage(){
-        // make the list
-        // make the props
-        // make some componets that handle the interactions there
-            // searchable list (tiles) that drills into the stories for that tile set.
-            // props that get entered and update the current element
-            // a screen that shows loads the component in an iframe
-                // do I need an iframe? it would provide the cleanest experience of the component. Yes.
+    populateStorehouse(){
+        const props = this.element.props.reduce( (a,n) => {
+            const {name} = n;
+            const markup = parse5.parseFragment(this.story.markup);
+            const elem = markup.childNodes.find( node => node.nodeName === this.element.name);
+            let value;
 
+            if(name === "slot"){
+                value = elem.innerHTML;
+            }
+            else {
+                if(name.startsWith('--')){
+
+                    let style = elem.attrs.find( (attr) => attr.name === 'style' );
+                    if(style){
+                        style = style.value;
+                        // TODO: get this working.
+                        console.log(elem);
+                        reg = new RegExp(`${name}:(.*?)(?:;|")`);
+                        value = style.search(reg)[1].trim();
+                    }
+                } else {
+                    let val = elem.attrs.find( (attr) => attr.name === name );
+                    if(val){
+                        value = val.value;
+                    }
+                }
+            }
+            return [...a,{name, value}];
+        },[]);
+        // TODO: you'll need to register the store items?
+        return {
+            element: this.element,
+            story: this.story,
+            properties: props
+        };
+    }
+    populatePage(){
         return `
             <element-actions>
                 <element-list title="Element Storybook">
