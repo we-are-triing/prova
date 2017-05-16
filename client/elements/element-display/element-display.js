@@ -6,8 +6,8 @@ class ElementDisplay extends RootElement {
         this.addPolyfills();
         this.cleanIframe();
         this.addImports();
-        document.addEventListener('storehouse-element', this.handleNewElement.bind(this));
-        document.addEventListener('storehouse-properties', this.handleUpdatedProp.bind(this));
+        document.addEventListener('stiva-element', this.handleNewElement.bind(this));
+        document.addEventListener('stiva-properties', this.handleUpdatedProp.bind(this));
     }
     handleUpdatedProp(e){
         e.detail.forEach( (prop) => {

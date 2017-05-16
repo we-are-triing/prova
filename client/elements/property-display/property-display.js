@@ -8,8 +8,8 @@ class PropertyDisplay extends RootElement {
         };
         this.elems.container.addEventListener('change', this.handleChange.bind(this));
         this.elems.container.addEventListener('keyup', this.handleChange.bind(this));
-        document.addEventListener('storehouse-element', this.handleNewElement.bind(this));
-        document.addEventListener('storehouse-properties', this.handleProperties.bind(this));
+        document.addEventListener('stiva-element', this.handleNewElement.bind(this));
+        document.addEventListener('stiva-properties', this.handleProperties.bind(this));
         this.populateForm();
     }
     handleNewElement(e){
@@ -72,7 +72,7 @@ class PropertyDisplay extends RootElement {
 
     }
     handleChange(e){
-        storehouse.update('properties', oldStore => {
+        stiva.update('properties', oldStore => {
             oldStore.splice(oldStore.findIndex( (item) => item.name === e.target.name), 1);
             oldStore.push({name: e.target.name, value: e.target.value});
             return oldStore;

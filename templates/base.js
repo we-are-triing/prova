@@ -1,7 +1,7 @@
 class BaseTemplate {
     constructor(){
         this.head = {};
-        this.storehouse = {};
+        this.stiva = {};
     }
     render(){
         const body = `
@@ -36,11 +36,11 @@ class BaseTemplate {
                 ${this.stylesheet ? `<link rel="stylesheet" href="${this.stylesheet}" />` : ``}
                 <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
 
-                <script src="${this.storybookRoot}/storehouse/storehouse.js"></script>
+                <script src="${this.storybookRoot}/stiva/stiva.js"></script>
                 <script>
-                    let storehouse = new Storehouse(${JSON.stringify(this.storehouse)});
+                    let stiva = new Stiva(${JSON.stringify(this.stiva)});
                     window.addEventListener('WebComponentsReady', (e) => {
-                        storehouse.dispatchAll();
+                        stiva.dispatchAll();
                     });
                 </script>
 

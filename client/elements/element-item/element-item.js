@@ -22,7 +22,7 @@ class ElementItem extends RootElement {
         });
 
 
-        storehouse.update('element', oldStore => ({
+        stiva.update('element', oldStore => ({
             currentStory: this.findStoryIndex(),
             name: this.name,
             props,

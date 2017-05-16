@@ -10,7 +10,7 @@ class ElementList extends RootElement {
             stories: this.shadowRoot.querySelector('.stories'),
             search: this.shadowRoot.querySelector('.search input')
         }
-        document.addEventListener('storehouse-element', this.handleElementChange.bind(this));
+        document.addEventListener('stiva-element', this.handleElementChange.bind(this));
         this.elems.stories.addEventListener('click', this.handleStoriesClick.bind(this));
         this.elems.close.addEventListener('click', this.handleClose.bind(this));
         this.elems.search.addEventListener('keyup', this.handleSearch.bind(this));
@@ -63,7 +63,7 @@ class ElementList extends RootElement {
         if(e.target.localName === 'element-story'){
             this.currentStoryIndex = [].slice.apply(this.elems.stories.children).indexOf(e.target);
 
-            storehouse.update('element', oldStore => ({
+            stiva.update('element', oldStore => ({
                 currentStory: this.currentStoryIndex,
                 name: oldStore.name,
                 props: oldStore.props,
@@ -78,7 +78,7 @@ class ElementList extends RootElement {
         let temp = document.createElement('div');
         temp.innerHTML = markup;
         const elem = temp.children[0];
-        const props = storehouse.stores.element.props.reduce( (a,n) => {
+        const props = stiva.stores.element.props.reduce( (a,n) => {
             const {name} = n;
             let value;
             if(name === "slot"){
@@ -101,7 +101,7 @@ class ElementList extends RootElement {
             a.push({name, value});
             return a;
         },[]);
-        storehouse.update('properties', oldStore => props);
+        stiva.update('properties', oldStore => props);
     }
 
     static get observedAttributes() {

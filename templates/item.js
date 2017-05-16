@@ -25,10 +25,10 @@ class ItemTemplate extends BaseTemplate {
     createParts(){
         this.head.title = `${this.elementName} - Element Storybook`;
         this.head.content = ``;
-        this.storehouse = this.populateStorehouse();
+        this.stiva = this.populatestiva();
         this.page = this.populatePage();
     }
-    populateStorehouse(){
+    populatestiva(){
         const markup = parse5.parseFragment(this.story.markup);
         const elem = markup.childNodes.find( node => node.nodeName === this.element.name);
 
