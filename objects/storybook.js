@@ -52,8 +52,10 @@ class Storybook {
         res.send(itemTemplate.render());
     }
     assignRoutes(){
+        let stivaPath = require.resolve('stiva');
+        console.log('yep', stivaPath);
         this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../client/elements') ));
-        this.app.use(`${this.storybookRoot}/stiva`, express.static( path.join(__dirname, '../node_modules/stiva') ));
+        this.app.use(`${this.storybookRoot}/stiva.js`, express.static( require.resolve('stiva') ));
         this.app.get(`${this.storybookRoot}/:element`, (req, res) => {
             const {element} = req.params;
             this.navigateToStory({elementName: element, currentStory: 0, res});

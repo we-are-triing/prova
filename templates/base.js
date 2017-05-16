@@ -36,7 +36,7 @@ class BaseTemplate {
                 ${this.stylesheet ? `<link rel="stylesheet" href="${this.stylesheet}" />` : ``}
                 <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
 
-                <script src="${this.storybookRoot}/stiva/stiva.js"></script>
+                <script src="${this.storybookRoot}/stiva.js"></script>
                 <script>
                     let stiva = new Stiva(${JSON.stringify(this.stiva)});
                     window.addEventListener('WebComponentsReady', (e) => {
