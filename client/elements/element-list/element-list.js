@@ -10,26 +10,28 @@ class ElementList extends RootElement {
             stories: this.shadowRoot.querySelector('.stories'),
             search: this.shadowRoot.querySelector('.search input')
         }
-        this.addEventListener('elementChange', this.handleElementChange.bind(this));
+        document.addEventListener('storehouse-element', this.handleElementChange.bind(this));
         this.elems.stories.addEventListener('click', this.handleStoriesClick.bind(this));
         this.elems.close.addEventListener('click', this.handleClose.bind(this));
         this.elems.search.addEventListener('keyup', this.handleSearch.bind(this));
         this.elems.search.addEventListener('change', this.handleSearch.bind(this));
+        this.currentStoryIndex = 0;
+        this.stories = [];
     }
     handleSearch(e){
         this.elems.overlay.classList.remove('active');
         if(e.target.value){
-            [...this.querySelectorAll(`element-item`)].forEach( (child) => {
+            [].slice.apply(this.querySelectorAll(`element-item`)).forEach( (child) => {
                 child.hidden = true;
             });
 
             if(e.target.value){
-                [...this.querySelectorAll(`element-item[name*=${e.target.value}]`)].forEach( (child) => {
+                [].slice.apply(this.querySelectorAll(`element-item[name*=${e.target.value}]`)).forEach( (child) => {
                     child.hidden = false;
                 });
             }
         } else {
-            [...this.querySelectorAll(`element-item`)].forEach( (child) => {
+            [].slice.apply(this.querySelectorAll(`element-item`)).forEach( (child) => {
                 child.hidden = false;
             });
         }
@@ -38,46 +40,68 @@ class ElementList extends RootElement {
         this.elems.overlay.classList.remove('active');
     }
     handleElementChange(e){
+        const {stories, name, currentStory} = e.detail;
         this.elems.overlay.classList.add('active');
-        this.elems.title.innerText = e.detail.element;
-        this.elems.stories.innerHTML = "";
-        [...e.detail.stories].forEach( (story) => this.elems.stories.appendChild(story) );
+        this.elems.title.innerText = name;
+        this.elems.stories.innerHTML = [].slice.apply(stories).map( story => `<element-story name=${story.name}>${story.markup}</element-story>` ).join('');
+        let active = this.querySelector('[active]')
+        active.removeAttribute('active');
+        active.removeAttribute('story');
 
-        this.querySelector('[active]').removeAttribute('active');
-        e.target.setAttribute('active','');
-        let story;
-        if(typeof e.detail.story === 'string'){
-            story = [...e.detail.stories].find( s => s.getAttribute('name') === e.detail.story );
-        }
-        else {
-            story = e.detail.stories[0];
-        }
-        this.dispatchNewElement(story);
-
+        this.querySelector(`element-item[name="${name}"]`).setAttribute(`active`,``);
+        this.currentStoryIndex = currentStory;
+        this.stories = stories;
+        this.selectActiveStory(this.elems.stories.querySelector(`[name="${this.stories[this.currentStoryIndex].name}"]`));
+        this.updateProps();
     }
-    handleStoriesClick(e){
-        this.dispatchNewElement(e.target);
-    }
-    dispatchNewElement(story){
+    selectActiveStory(story){
         let activeStory = this.elems.stories.querySelector('[active]');
         if(activeStory){ activeStory.removeAttribute('active'); }
         story.setAttribute('active','');
+    }
+    handleStoriesClick(e){
+        if(e.target.localName === 'element-story'){
+            this.currentStoryIndex = [].slice.apply(this.elems.stories.children).indexOf(e.target);
 
-        let elemItem = this.querySelector(`element-item[name="${this.elems.title.innerText}"]`);
-        let props = [].slice.apply(elemItem.querySelectorAll(`element-properties prop-item `))
-            // .map((elem) => ({ values: elem.values, name: elem.innerText }) );
-            .map((elem) => elem.cloneNode(true) )
-        this.dispatchEvent(new CustomEvent('newElement', {
-            detail: {
-                element: this.elems.title.innerText,
-                story: story.name,
-                markup: story.innerHTML,
-                props: props,
-                slotElements: elemItem.slotElements
-            },
-            bubbles: true,
-            cancelable: false
-        }));
+            storehouse.update('element', oldStore => ({
+                currentStory: this.currentStoryIndex,
+                name: oldStore.name,
+                props: oldStore.props,
+                slotElements: oldStore.slotElements,
+                stories: oldStore.stories
+            }));
+            this.updateProps();
+        }
+    }
+    updateProps(){
+        const markup = this.stories[this.currentStoryIndex].markup;
+        let temp = document.createElement('div');
+        temp.innerHTML = markup;
+        const elem = temp.children[0];
+        const props = storehouse.stores.element.props.reduce( (a,n) => {
+            const {name} = n;
+            let value;
+            if(name === "slot"){
+                value = elem.innerHTML;
+            }
+            else {
+                if(name.startsWith('--')){
+                    let style = elem.getAttribute('style');
+                    if(style){
+                        let reg = new RegExp(`${name}:(.*?)(?:;|$)`);
+                        value = reg.exec(style)[1].trim();
+                    }
+                } else {
+                    let val = elem.getAttribute(name);
+                    if(elem.hasAttribute(name)){
+                        value = val || true;
+                    }
+                }
+            }
+            a.push({name, value});
+            return a;
+        },[]);
+        storehouse.update('properties', oldStore => props);
     }
 
     static get observedAttributes() {

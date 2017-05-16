@@ -3,7 +3,7 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills'}){
+    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
@@ -12,6 +12,7 @@ class Storybook {
         this.pathToElements = this.trimSlash(pathToElements);
         this.pathToPolyfills = this.trimSlash(pathToPolyfills);
         this.app = app;
+        this.stylesheet = stylesheet;
 
         this.assignRoutes();
     }
@@ -46,22 +47,20 @@ class Storybook {
         .then(values => values.reduce( (a,n) => [...a,...n] ).map( storyPath => require(`${this.dir}/${storyPath}`)))
         .catch( (reason) => console.log(reason));
     }
-    navigateToStory({elementName,storyName,res}){
-        //TODO: This is assuming my file structure, which is ok for now.
-        //TODO: elements root will need to allow for split areas and elements not in the same area, but for now.
-        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, storyName, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills});
+    navigateToStory({elementName,currentStory,res}){
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, currentStory, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills, stylesheet: this.stylesh});
         res.send(itemTemplate.render());
     }
     assignRoutes(){
         this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../client/elements') ));
-        this.app.use(`${this.storybookRoot}/store`, express.static( path.join(__dirname, '../client/store') ));
+        this.app.use(`${this.storybookRoot}/storehouse`, express.static( path.join(__dirname, '../client/storehouse') ));
         this.app.get(`${this.storybookRoot}/:element`, (req, res) => {
             const {element} = req.params;
-            this.navigateToStory({elementName: element, storyName: 0, res});
+            this.navigateToStory({elementName: element, currentStory: 0, res});
         });
         this.app.get(`${this.storybookRoot}/:element/:story`, (req, res) => {
             const {element,story} = req.params;
-            this.navigateToStory({elementName: element,storyName: story,res});
+            this.navigateToStory({elementName: element,currentStory: story,res});
         });
         this.app.get(`${this.storybookRoot}`, (req, res) => {
             if(this.stories.length === 0){

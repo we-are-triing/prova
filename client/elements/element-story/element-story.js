@@ -30,5 +30,16 @@ class ElementStory extends RootElement {
             this.removeAttribute('name');
         }
     }
+    get active(){
+        return this.getAttribute('active');
+    }
+    set active(val){
+        if(val){
+            this.setAttribute('active', val);
+        }
+        else {
+            this.removeAttribute('active');
+        }
+    }
 }
 RootElement.registerElement('element-story', ElementStory);

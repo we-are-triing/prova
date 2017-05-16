@@ -1,18 +1,18 @@
 const BaseTemplate = require('./base.js');
 const parse5 = require('parse5');
 class ItemTemplate extends BaseTemplate {
-    constructor({elementList, elementName, storyName, elementsRoot, storybookRoot, polyfills}){
+    constructor({elementList, elementName, currentStory, elementsRoot, storybookRoot, polyfills, stylesheet}){
         super();
-
+        this.stylesheet = stylesheet;
         this.elementList = elementList;
         this.elementName = elementName;
         this.element = this.findByName(this.elementList, elementName);
-        if(typeof storyName === "number"){
-            this.story = this.element.stories[storyName];
-            this.storyName = this.story.name;
+        if(typeof currentStory === "number"){
+            this.story = this.element.stories[currentStory];
+            this.element.currentStory = currentStory;
         } else{
-            this.storyName = storyName;
-            this.story = this.findByName(this.element.stories, storyName);
+            this.story = this.findByName(this.element.stories, currentStory);
+            this.element.currentStory = this.element.stories.findIndex( item => item.name === currentStory);
         }
         this.elementsRoot = elementsRoot;
         this.polyfills = polyfills;
@@ -29,12 +29,12 @@ class ItemTemplate extends BaseTemplate {
         this.page = this.populatePage();
     }
     populateStorehouse(){
+        const markup = parse5.parseFragment(this.story.markup);
+        const elem = markup.childNodes.find( node => node.nodeName === this.element.name);
+
         const props = this.element.props.reduce( (a,n) => {
             const {name} = n;
-            const markup = parse5.parseFragment(this.story.markup);
-            const elem = markup.childNodes.find( node => node.nodeName === this.element.name);
             let value;
-
             if(name === "slot"){
                 value = elem.innerHTML;
             }
@@ -44,24 +44,20 @@ class ItemTemplate extends BaseTemplate {
                     let style = elem.attrs.find( (attr) => attr.name === 'style' );
                     if(style){
                         style = style.value;
-                        // TODO: get this working.
-                        console.log(elem);
-                        reg = new RegExp(`${name}:(.*?)(?:;|")`);
-                        value = style.search(reg)[1].trim();
+                        let reg = new RegExp(`${name}:(.*?)(?:;|$)`);
+                        value = reg.exec(style)[1].trim();
                     }
                 } else {
-                    let val = elem.attrs.find( (attr) => attr.name === name );
-                    if(val){
-                        value = val.value;
+                    let prop = elem.attrs.find( (attr) => attr.name === name );
+                    if(prop){
+                        value = prop.value || true;
                     }
                 }
             }
             return [...a,{name, value}];
         },[]);
-        // TODO: you'll need to register the store items?
         return {
             element: this.element,
-            story: this.story,
             properties: props
         };
     }
@@ -89,10 +85,10 @@ class ItemTemplate extends BaseTemplate {
                         )).join('')
                     }
                 </element-list>
-                <element-props>
+                <property-display>
                 <!-- this needs to be based on the current item -->
                     ${this.addProps(this.element.props)}
-                </element-props>
+                </property-display>
             </element-actions>
             <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.storybookRoot}" polyfills="${this.polyfills}">${this.story.markup}</element-display>
         `;

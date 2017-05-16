@@ -5,8 +5,8 @@ class Story {
         this.slotElements = [];
         this.stories = [];
     }
-    add(name, markup, elements = []) {
-        this.stories.push({name, markup, elements});
+    add(name, markup) {
+        this.stories.push({name, markup});
         return this;
     }
     addProp(name, values = []){

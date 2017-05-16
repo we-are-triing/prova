@@ -10,6 +10,18 @@ class BaseTemplate {
             </main>
         `;
 
+        const elements = [
+            'element-actions',
+            'element-display',
+            'element-item',
+            'element-list',
+            'element-properties',
+            'element-story',
+            'prop-item',
+            'property-display'
+        ]
+
+
         return `
         <!DOCTYPE html>
         <html>
@@ -21,28 +33,26 @@ class BaseTemplate {
                 <meta property="og:site_name" content="Native Elements Starter">
                 <title>${this.head.title}</title>
                 ${this.head.content}
-                <link rel="stylesheet" href="${this.elementsRoot}/index.css" />
+                ${this.stylesheet ? `<link rel="stylesheet" href="${this.stylesheet}" />` : ``}
                 <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
 
-                <script src="${this.storybookRoot}/store/store.js"></script>
+                <script src="${this.storybookRoot}/storehouse/storehouse.js"></script>
                 <script>
                     let storehouse = new Storehouse(${JSON.stringify(this.storehouse)});
                     window.addEventListener('WebComponentsReady', (e) => {
-                        console.log('components are ready');
                         storehouse.dispatchAll();
                     });
                 </script>
 
                 <script src="${this.polyfills}/webcomponents-loader.js"></script>
                 ${
-                    this.parseElements(body).map( (name) => (
+                    elements.map( (name) => (
                         `<link rel="import" href="${this.storybookRoot}/elements/${name}/${name}.html">`
                     )).join('')
                 }
             </head>
             <body>
                 ${body}
-
             </body>
         </html>
         `;

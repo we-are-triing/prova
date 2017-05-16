@@ -3,24 +3,40 @@ class ElementItem extends RootElement {
         super();
         this.buildShadowRoot();
         this.elems = {
-            block: this.shadowRoot.querySelector('.block')
+            block: this.shadowRoot.querySelector('.block'),
+            props: [].slice.apply(this.querySelectorAll('element-properties prop-item'))
         }
         this.elems.block.dataset.element = this.name;
         this.addEventListener('click', this.handleBlockClick.bind(this));
-        if( this.hasAttribute('active') ) {
-            this.handleBlockClick(this.getAttribute('story'));
-        }
     }
-    handleBlockClick(story) {
-        this.dispatchEvent(new CustomEvent('elementChange', {
-            detail: {
-                stories: [].slice.apply(this.children).slice(1).map( (story) => story.cloneNode(true)),
-                element: this.name,
-                story
-            },
-            bubbles: true,
-            cancelable: false
+    handleBlockClick(e) {
+        let props = this.elems.props.map( item => {
+            if(item.values){
+                return {
+                    name: item.innerText,
+                    values: item.values.indexOf(',') > -1 ? item.values.split(',') : item.values
+                }
+            }
+            return { name: item.innerText, values: undefined}
+
+        });
+
+
+        storehouse.update('element', oldStore => ({
+            currentStory: this.findStoryIndex(),
+            name: this.name,
+            props,
+            slotElements: this.slotElements ? this.slotElements.split(',') : [],
+            stories: [].slice.apply(this.children).slice(1).map( (story) => ({name: story.name, markup: story.innerHTML}))
         }));
+    }
+    findStoryIndex(){
+        if(this.story){
+            return [].slice.apply(this.querySelectorAll('element-story')).findIndex( story => story.name === this.story);
+        }
+        else {
+            return 0;
+        }
     }
     get name() {
         return this.getAttribute('name');
@@ -42,6 +58,18 @@ class ElementItem extends RootElement {
             this.removeAttribute('slot-elements');
         }
     }
+
+    get story() {
+        return this.getAttribute('story');
+    }
+    set story(val) {
+        if (val) {
+            this.setAttribute('story', val);
+        } else {
+            this.removeAttribute('story');
+        }
+    }
+
     get hidden() {
         return this.hasAttribute('hidden');
     }
