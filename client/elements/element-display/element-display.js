@@ -5,20 +5,17 @@ class ElementDisplay extends RootElement {
         this.elems = {
             iframe: document.createElement('iframe')
         };
-        this.elems.iframe.onload = () => {
-            this.onIframeReady();
-        }
+        this.elems.iframe.addEventListener('load', this.buildDevArea.bind(this));
         this.shadowRoot.appendChild(this.elems.iframe);
+
+        document.addEventListener('stiva-element', this.handleNewElement.bind(this));
+        document.addEventListener('stiva-properties', this.handleUpdatedProp.bind(this));
     }
-    onIframeReady(){
-        this.addLocalElems();
-        setTimeout(() => {
-            this.addPolyfills();
-            this.cleanIframe();
-            this.addImports();
-            document.addEventListener('stiva-element', this.handleNewElement.bind(this));
-            document.addEventListener('stiva-properties', this.handleUpdatedProp.bind(this));
-        }, 100);
+    buildDevArea(){
+        this.elems.iframeDoc = this.elems.iframe.contentDocument;
+        this.addPolyfills();
+        this.cleanIframe();
+        this.addImports();
     }
     handleUpdatedProp(e){
         e.detail.forEach( (prop) => {
@@ -39,6 +36,7 @@ class ElementDisplay extends RootElement {
     }
     reload(){
         this.elems.iframeDoc.location.reload();
+        setTimeout( () => stiva.dispatchAll(), 300);
     }
     addPolyfills(){
         const s = document.createElement('script');
@@ -46,8 +44,9 @@ class ElementDisplay extends RootElement {
         this.elems.iframeDoc.head.appendChild(s);
     }
     handleNewElement(e){
+        console.log('handleNewElement');
         let {name, slotElements, stories, currentStory} = e.detail;
-        this.elems.iframeDoc.body.innerHTML = stories[currentStory].markup;
+        this.elems.iframeDoc.body.innerHTML = `${stories[currentStory].markup}`;
         this.elems.targetElement = this.elems.iframeDoc.querySelector(name);
         this.elements = `${name},${slotElements}`;
         this.addImports();
@@ -55,11 +54,6 @@ class ElementDisplay extends RootElement {
         // change out hte innerTHML and update the URL
         document.title = `${name} - Element Storybook`;
         window.history.pushState({"pageTitle":document.title},document.title, `${this.storybookroot}/${name}/${stories[currentStory].name}`);
-    }
-    addLocalElems(){
-        this.elems.iframeDoc = this.elems.iframe.contentDocument;
-        this.elems.iframeDoc.body.innerHTML = this.innerHTML;
-        this.elems.targetElement = this.elems.iframeDoc.querySelector(this.children[0].localName);
     }
     addImports(){
         this.elems.iframeDoc.head.querySelectorAll(`link[rel="import"]`).forEach((link) => link.remove());

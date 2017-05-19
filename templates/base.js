@@ -39,7 +39,8 @@ class BaseTemplate {
                 <script>
                     let stiva = new Stiva(${JSON.stringify(this.stiva)});
                     window.addEventListener('WebComponentsReady', (e) => {
-                        stiva.dispatchAll();
+                        console.log('web components ready');
+                        setTimeout(() => stiva.dispatchAll(), 300);
                     });
                 </script>
 

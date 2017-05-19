@@ -16,7 +16,9 @@ const storybook = new Storybook({
     pathToElements: '/elements/',
     pathToPolyfills: `/polyfills/`,
     app,
-    dir: path.join(__dirname,`../`)
+    dir: path.join(__dirname,`../`),
+    stylesheet: '/path/to/stylesheet',
+    inject: '<script>//something to be injected before the close body tag.</script>'
 });
 ```
 
@@ -28,6 +30,8 @@ const storybook = new Storybook({
 - pathToPolyfills: Element-storybook doesn't load the polyfills itself. We are assuming, since you are developing custom elements, you have your own support taken care of. So you can specify the path to your polyfills. If you need more information about the polyfills goto the [Web Components Project on GitHub](https://github.com/webcomponents/webcomponentsjs)
 - app: the express app.
 - dir: The root of your project, this may not be the same as `__dirname` as that is the root of the node process and some projects are organized to have a server directory and a client directory. This would be the root of the project.
+- stylesheet: This is a stylesheet that will be injected into the iframe to see how your project styles might effect the element.
+- inject: this is a block that allows you to inject anything right before the closing body tag.
 
 
 # Creating a story
