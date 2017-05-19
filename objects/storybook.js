@@ -3,7 +3,7 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet}){
+    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet, inject}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
@@ -13,6 +13,7 @@ class Storybook {
         this.pathToPolyfills = this.trimSlash(pathToPolyfills);
         this.app = app;
         this.stylesheet = stylesheet;
+        this.inject = inject;
 
         this.assignRoutes();
     }
@@ -48,12 +49,11 @@ class Storybook {
         .catch( (reason) => console.log(reason));
     }
     navigateToStory({elementName,currentStory,res}){
-        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, currentStory, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills, stylesheet: this.stylesh});
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, currentStory, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills, stylesheet: this.stylesheet, inject: this.inject});
         res.send(itemTemplate.render());
     }
     assignRoutes(){
         let stivaPath = require.resolve('stiva');
-        console.log('yep', stivaPath);
         this.app.use(`${this.storybookRoot}/elements`, express.static( path.join(__dirname, '../client/elements') ));
         this.app.use(`${this.storybookRoot}/stiva.js`, express.static( require.resolve('stiva') ));
         this.app.get(`${this.storybookRoot}/:element`, (req, res) => {

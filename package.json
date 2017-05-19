@@ -1,6 +1,6 @@
 {
   "name": "element-storybook",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "This is a development and testing environment for native components.",
   "main": "index.js",
   "repository": "https://github.com/LuceStudio/element-storybook.git",

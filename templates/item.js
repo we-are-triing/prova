@@ -1,9 +1,10 @@
 const BaseTemplate = require('./base.js');
 const parse5 = require('parse5');
 class ItemTemplate extends BaseTemplate {
-    constructor({elementList, elementName, currentStory, elementsRoot, storybookRoot, polyfills, stylesheet}){
+    constructor({elementList, elementName, currentStory, elementsRoot, storybookRoot, polyfills, stylesheet, inject}){
         super();
         this.stylesheet = stylesheet;
+        this.inject = inject;
         this.elementList = elementList;
         this.elementName = elementName;
         this.element = this.findByName(this.elementList, elementName);
@@ -90,7 +91,7 @@ class ItemTemplate extends BaseTemplate {
                     ${this.addProps(this.element.props)}
                 </property-display>
             </element-actions>
-            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `, ${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.storybookRoot}" polyfills="${this.polyfills}">${this.story.markup}</element-display>
+            <element-display elements="${this.element.name}${this.element.slotElements.length > 0 ? `,${this.element.slotElements}`:``}" rootPath="${this.elementsRoot}" storybookroot="${this.storybookRoot}" polyfills="${this.polyfills}" ${this.stylesheet ? `stylesheet="${this.stylesheet}"` : ``}>${this.story.markup}</element-display>
         `;
     }
     addProps(props){

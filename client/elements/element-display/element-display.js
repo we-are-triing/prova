@@ -2,12 +2,23 @@ class ElementDisplay extends RootElement {
     constructor() {
         super();
         this.buildShadowRoot();
+        this.elems = {
+            iframe: document.createElement('iframe')
+        };
+        this.elems.iframe.onload = () => {
+            this.onIframeReady();
+        }
+        this.shadowRoot.appendChild(this.elems.iframe);
+    }
+    onIframeReady(){
         this.addLocalElems();
-        this.addPolyfills();
-        this.cleanIframe();
-        this.addImports();
-        document.addEventListener('stiva-element', this.handleNewElement.bind(this));
-        document.addEventListener('stiva-properties', this.handleUpdatedProp.bind(this));
+        setTimeout(() => {
+            this.addPolyfills();
+            this.cleanIframe();
+            this.addImports();
+            document.addEventListener('stiva-element', this.handleNewElement.bind(this));
+            document.addEventListener('stiva-properties', this.handleUpdatedProp.bind(this));
+        }, 100);
     }
     handleUpdatedProp(e){
         e.detail.forEach( (prop) => {
@@ -26,6 +37,9 @@ class ElementDisplay extends RootElement {
             }
         });
     }
+    reload(){
+        this.elems.iframeDoc.location.reload();
+    }
     addPolyfills(){
         const s = document.createElement('script');
         s.src = `${this.polyfills}/webcomponents-loader.js`;
@@ -43,16 +57,12 @@ class ElementDisplay extends RootElement {
         window.history.pushState({"pageTitle":document.title},document.title, `${this.storybookroot}/${name}/${stories[currentStory].name}`);
     }
     addLocalElems(){
-        this.elems = {
-            iframe: this.shadowRoot.querySelector('iframe')
-        }
-        this.elems.iframeDoc = this.elems.iframe.contentWindow.document;
+        this.elems.iframeDoc = this.elems.iframe.contentDocument;
         this.elems.iframeDoc.body.innerHTML = this.innerHTML;
         this.elems.targetElement = this.elems.iframeDoc.querySelector(this.children[0].localName);
     }
     addImports(){
         this.elems.iframeDoc.head.querySelectorAll(`link[rel="import"]`).forEach((link) => link.remove());
-
         this.elements.split(',').forEach( (elem) => {
             if(elem){
                 let link = document.createElement('link');
@@ -71,6 +81,12 @@ class ElementDisplay extends RootElement {
             }
         `;
         this.elems.iframeDoc.head.appendChild(style);
+        if(this.stylesheet){
+            let link = document.createElement('link');
+            link.href = this.stylesheet;
+            link.rel = "stylesheet";
+            this.elems.iframeDoc.head.appendChild(link);
+        }
     }
     get elements(){
         return this.getAttribute('elements');
@@ -116,5 +132,17 @@ class ElementDisplay extends RootElement {
             this.removeAttribute('polyfills');
         }
     }
+    get stylesheet(){
+        return this.getAttribute('stylesheet');
+    }
+    set stylesheet(val){
+        if(val){
+            this.setAttribute('stylesheet', val);
+        }
+        else {
+            this.removeAttribute('stylesheet');
+        }
+    }
+
 }
 RootElement.registerElement('element-display', ElementDisplay);

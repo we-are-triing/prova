@@ -33,7 +33,6 @@ class BaseTemplate {
                 <meta property="og:site_name" content="Native Elements Starter">
                 <title>${this.head.title}</title>
                 ${this.head.content}
-                ${this.stylesheet ? `<link rel="stylesheet" href="${this.stylesheet}" />` : ``}
                 <link rel="stylesheet" href="${this.storybookRoot}/elements/index.css" />
 
                 <script src="${this.storybookRoot}/stiva.js"></script>
@@ -53,6 +52,7 @@ class BaseTemplate {
             </head>
             <body>
                 ${body}
+                ${this.inject}
             </body>
         </html>
         `;

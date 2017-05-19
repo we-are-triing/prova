@@ -26,6 +26,7 @@
         }
         label:not([data-type="checkbox"]) {
             font-size: 0.8em;
+            font-weight: 300;
             color: var(--es-color-500);
         }
         input[type="checkbox"]{
@@ -38,11 +39,15 @@
         input:not([type="checkbox"]), select, textarea {
             display: block;
             width: 100%;
-            font-size: 1em;
-            padding: 0.2em 0.4em;
+            font-size: 0.8em;
+            padding: 0.6em 1em;
             border: none;
             outline: none;
             background: var(--es-color-300);
+        }
+        textarea {
+            font-family: monospace;
+            min-height: 12em;
         }
     </style>
     <div></div>
