@@ -44,7 +44,6 @@ class ElementDisplay extends RootElement {
         this.elems.iframeDoc.head.appendChild(s);
     }
     handleNewElement(e){
-        console.log('handleNewElement');
         let {name, slotElements, stories, currentStory} = e.detail;
         this.elems.iframeDoc.body.innerHTML = `${stories[currentStory].markup}`;
         this.elems.targetElement = this.elems.iframeDoc.querySelector(name);
@@ -81,6 +80,18 @@ class ElementDisplay extends RootElement {
             link.rel = "stylesheet";
             this.elems.iframeDoc.head.appendChild(link);
         }
+
+        let script = document.createElement('script');
+    	script.async = true;
+    	script.src = `${this.storybookroot}/stiva.js`;
+        script.onload = script.onreadystatechange = (e) => {
+    		let rs = e.target.readyState;
+    		if (rs && rs !== 'complete' && rs !== 'loaded') { return; }
+            this.elems.iframe.contentWindow.stiva = new Stiva({},this.elems.iframeDoc);
+    	};
+    	this.elems.iframeDoc.head.appendChild(script);
+
+        this.elems.iframeDoc.stiva = new Stiva();
     }
     get elements(){
         return this.getAttribute('elements');

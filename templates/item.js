@@ -95,9 +95,9 @@ class ItemTemplate extends BaseTemplate {
         `;
     }
     addProps(props){
-        return props.map( (prop) => (
-            `<prop-item${ prop.values.length > 0 ? ` values="${prop.values}"` : ''}>${prop.name}</prop-item>`
-        )).join('')
+        return props.map( (prop) => {
+            return `<prop-item${ prop.values.length > 0 ? ` values='${prop.values}'` : ''}>${prop.name}</prop-item>`
+        }).join('')
     }
 }
 module.exports = ItemTemplate;

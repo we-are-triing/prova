@@ -35,6 +35,8 @@ class PropertyDisplay extends RootElement {
             if(elem){
                 if(elem.type === 'checkbox'){
                     elem.checked = value
+                } else if (elem.contenteditable){
+                    elem.innerHTML = JSON.stringify(JSON.parse(value));
                 } else {
                     elem.value = value;
                 }
@@ -47,6 +49,15 @@ class PropertyDisplay extends RootElement {
                 <label for="${name}" data-type="checkbox">${name}</label>
                 <input name="${name}" type="checkbox" />
             `;
+        }
+
+        if(name.indexOf('stiva-') === 0){
+            let store = name.replace('stiva-','');
+            this.updateStiva(store, JSON.parse(values));
+            return `
+                <label for="${name}">${name}</label>
+                <div contenteditable name="${name}">${JSON.stringify(JSON.parse(values))}</div>
+            `
         }
 
         if(Array.isArray(values) && values.length > 0) {
@@ -71,12 +82,25 @@ class PropertyDisplay extends RootElement {
         `
 
     }
+    updateStiva(store, value){
+        document.querySelector('element-display').elems.iframe.contentWindow.stiva.update(store, oldStore => value);
+    }
     handleChange(e){
+        if(e.target.localName === 'div'){
+            let store = e.target.getAttribute('name').replace('stiva-','');
+            try {
+                let json = JSON.parse(e.target.innerHTML);
+                this.updateStiva(store, json);
+            }
+            catch(err){}
+        }
+
         stiva.update('properties', oldStore => {
             oldStore.splice(oldStore.findIndex( (item) => item.name === e.target.name), 1);
             oldStore.push({name: e.target.name, value: e.target.value});
             return oldStore;
         });
+
     }
 
 }

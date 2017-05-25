@@ -52,7 +52,8 @@ class ElementList extends RootElement {
         this.currentStoryIndex = currentStory;
         this.stories = stories;
         this.selectActiveStory(this.elems.stories.querySelector(`[name="${this.stories[this.currentStoryIndex].name}"]`));
-        this.updateProps();
+        // put this on the bench until the element event finishes propigating.
+        window.setTimeout(() => this.updateProps(), 100);
     }
     selectActiveStory(story){
         let activeStory = this.elems.stories.querySelector('[active]');
@@ -74,10 +75,11 @@ class ElementList extends RootElement {
         }
     }
     updateProps(){
-        const markup = this.stories[this.currentStoryIndex].markup;
+        const story = this.stories[this.currentStoryIndex];
+        const markup = story.markup;
         let temp = document.createElement('div');
         temp.innerHTML = markup;
-        const elem = temp.children[0];
+        const elem = temp.querySelector(this.elems.title.innerText);
         const props = stiva.stores.element.props.reduce( (a,n) => {
             const {name} = n;
             let value;
