@@ -92,6 +92,7 @@ class ElementDisplay extends RootElement {
     	this.elems.iframeDoc.head.appendChild(script);
 
         this.elems.iframeDoc.stiva = new Stiva();
+        this.elems.iframeDoc.body.classList.add('WebComponentsReady');
     }
     get elements(){
         return this.getAttribute('elements');
