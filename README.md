@@ -2,9 +2,6 @@
 This is a development and testing environment for native components.
 _This is in beta and may have extensiv changes, all efforts will be provided to create non breaking changes, but there is no guarentee, and if a feature is needed that will benefit the product but cause a breaking change, it will be implamented._
 
-## Trello
-[trello board](https://trello.com/b/lzPOp8Bt/element-storybook). Vote for features, or submit an issue to propose new features or report bugs. You can submit PRs too!
-
 # How to use:
 Element-storybook is build on express and allows you to create an instance and configure it's deployment. It is a development tool, as well as a display tool as in using React-Storybook I have found it has been needed to showcase elements.
 
