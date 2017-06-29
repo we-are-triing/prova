@@ -10,7 +10,10 @@ class Story {
         return this;
     }
     addProp(name, values = []){
-        if(Array.isArray(name)){
+        if(name.indexOf('stiva-') === 0){
+            this.props.push({name, values: JSON.stringify(values)});
+        }
+        else if(Array.isArray(name)){
             name.forEach( n => this.props.push({name: n}) )
         }
         else {
@@ -29,16 +32,3 @@ class Story {
     }
 }
 module.exports = Story;
-// returns an array of objects
-/*
-    {
-        name: "element-name",
-        props: propsObject,
-        stories: [
-            {
-                name: "story-name",
-                markup: "markup"
-            }
-        ]
-    }
-*/
