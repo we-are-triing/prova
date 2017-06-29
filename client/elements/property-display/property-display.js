@@ -73,8 +73,9 @@ class PropertyDisplay extends RootElement {
     }
     handleChange(e){
         stiva.update('properties', oldStore => {
+            const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
             oldStore.splice(oldStore.findIndex( (item) => item.name === e.target.name), 1);
-            oldStore.push({name: e.target.name, value: e.target.value});
+            oldStore.push({name: e.target.name, value: val});
             return oldStore;
         });
     }
