@@ -3,7 +3,7 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet, inject, moduleType}){
+    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet, inject, moduleType = 'js'}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
