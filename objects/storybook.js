@@ -3,7 +3,7 @@ const ItemTemplate = require('../templates/item.js');
 const path = require('path');
 const express = require('express');
 class Storybook {
-    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet, inject}){
+    constructor({stories, storybookRoot = '', app, dir = __dirname, pathToElements='/elements', pathToPolyfills='/polyfills', stylesheet, inject, moduleType}){
         this.getStories(stories).then((storyObjects) => {
             this.stories = storyObjects;
         });
@@ -14,6 +14,7 @@ class Storybook {
         this.app = app;
         this.stylesheet = stylesheet;
         this.inject = inject;
+        this.moduleType = moduleType;
 
         this.assignRoutes();
     }
@@ -49,7 +50,7 @@ class Storybook {
         .catch( (reason) => console.log(reason));
     }
     navigateToStory({elementName,currentStory,res}){
-        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, currentStory, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills, stylesheet: this.stylesheet, inject: this.inject});
+        let itemTemplate = new ItemTemplate({elementList: this.stories, elementName, currentStory, elementsRoot: this.pathToElements, storybookRoot: this.storybookRoot, polyfills: this.pathToPolyfills, stylesheet: this.stylesheet, inject: this.inject, moduleType: this.moduleType});
         res.send(itemTemplate.render());
     }
     assignRoutes(){

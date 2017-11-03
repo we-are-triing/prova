@@ -1,7 +1,61 @@
-class PropertyDisplay extends RootElement {
+import buildShadowRoot from './buildShadowRoot.js';
+
+class PropertyDisplay extends HTMLElement {
     constructor() {
         super();
-        this.buildShadowRoot();
+        const html = `<style>
+                        :host {
+                            display: block;
+                        }
+                        * {
+                            box-sizing: border-box;
+                        }
+                        div {
+                            height: 100%;
+                            overflow: auto;
+                            border: 1px solid var(--es-color-400);
+                            /*border-top: none;*/
+                            background: var(--es-color-100);
+                        }
+                        div ul {
+                            display: block;
+                            list-style: none;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        li {
+                            margin-bottom: 1em;
+                            /*border-bottom: 1px solid var(--es-color-300);*/
+                            padding: 0.2em 0.6em;
+                        }
+                        label:not([data-type="checkbox"]) {
+                            font-size: 0.8em;
+                            font-weight: 300;
+                            color: var(--es-color-500);
+                        }
+                        input[type="checkbox"]{
+                            float: right;
+                            margin-right: 0.6em;
+                            border: none;
+                            outline: none;
+                            background: var(--es-color-300);
+                        }
+                        input:not([type="checkbox"]), select, textarea, [contenteditable] {
+                            display: block;
+                            width: 100%;
+                            font-size: 0.8em;
+                            padding: 0.6em 1em;
+                            border: none;
+                            outline: none;
+                            background: var(--es-color-300);
+                        }
+                        textarea, [contenteditable] {
+                            font-family: monospace;
+                            min-height: 12em;
+                        }
+                    </style>
+                    <div></div>`;
+        buildShadowRoot(html, this);
         this.props = [];
         this.elems = {
             container: this.shadowRoot.querySelector('div')
@@ -105,4 +159,5 @@ class PropertyDisplay extends RootElement {
     }
 
 }
-RootElement.registerElement('property-display', PropertyDisplay);
+customElements.define('property-display', PropertyDisplay);
+export default PropertyDisplay;
