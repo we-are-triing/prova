@@ -1,7 +1,22 @@
-class ElementDisplay extends RootElement {
+import buildShadowRoot from './buildShadowRoot.js'
+
+class ElementDisplay extends HTMLElement {
     constructor() {
         super();
-        this.buildShadowRoot();
+        const html = `<style>
+            :host {
+                display: block;
+            }
+            iframe {
+                border: none;
+                width: 100%;
+                height: 100vh;
+                transform: translateZ(0);
+            }
+        </style>`;
+
+        buildShadowRoot(html, this);
+
         this.elems = {
             iframe: document.createElement('iframe')
         };
@@ -55,15 +70,24 @@ class ElementDisplay extends RootElement {
         window.history.pushState({"pageTitle":document.title},document.title, `${this.storybookroot}/${name}/${stories[currentStory].name}`);
     }
     addImports(){
-        this.elems.iframeDoc.head.querySelectorAll(`link[rel="import"]`).forEach((link) => link.remove());
-        this.elements.split(',').forEach( (elem) => {
-            if(elem){
-                let link = document.createElement('link');
-                link.rel = "import";
-                link.href = `${this.rootpath}/${elem}/${elem}.html`;
-                this.elems.iframeDoc.head.appendChild(link);
-            }
-        });
+
+        let generateElement = (tag, attr, value, ext, href) => {
+            this.elems.iframeDoc.head.querySelectorAll(`${tag}[${attr}="${value}"]`).forEach((elem) => elem.remove());
+            this.elements.split(',').forEach( (elem) => {
+                if(elem){
+                    let item = document.createElement(tag);
+                    item[attr] = value;
+                    item[href] = `${this.rootpath}/${elem}/${elem}.${ext}`;
+                    this.elems.iframeDoc.head.appendChild(item);
+                }
+            });
+        }
+        if(this.moduleType === 'js' || this.moduleType === 'undefined'){
+            generateElement('script', 'type', 'module', 'js', 'src');
+        }
+        else if(this.moduleType === "html"){
+          generateElement('link', 'rel', 'import', 'html', 'href');
+        }
     }
     cleanIframe(){
         let style = document.createElement('style');
@@ -150,5 +174,19 @@ class ElementDisplay extends RootElement {
         }
     }
 
+    get moduleType(){
+        return this.getAttribute('moduletype');
+    }
+    set moduleType(val){
+        if(val){
+            this.setAttribute('moduletype', val);
+        }
+        else {
+            this.removeAttribute('moduletype');
+        }
+    }
+
+
 }
-RootElement.registerElement('element-display', ElementDisplay);
+customElements.define('element-display', ElementDisplay);
+export default ElementDisplay;

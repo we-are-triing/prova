@@ -4,6 +4,8 @@ _This is in beta and may have extensiv changes, all efforts will be provided to 
 
 ![Storybook screen](https://github.com/LuceStudio/element-storybook/blob/master/element-storybook.gif?raw=true)
 
+In a future release JS modules will be the default type and the UI will be moved over to that. I just want to give you a heads up.
+
 # How to use:
 Element-storybook is build on express and allows you to create an instance and configure it's deployment. It is a development tool, as well as a display tool as in using React-Storybook I have found it has been needed to showcase elements.
 
@@ -14,12 +16,14 @@ const storybook = new Storybook({
     storybookRoot: '/element-storybook/',
     pathToElements: '/elements/',
     pathToPolyfills: `/polyfills/`,
+    moduleType: 'html'
     app,
     dir: path.join(__dirname,`../`),
     stylesheet: '/path/to/stylesheet',
     inject: '<script>//something to be injected before the close body tag.</script>'
 });
 ```
+You can now use JS import style instead of HTML imports. The property `moduleType` can be set to JS to allow this.
 
 ## Parts
 
@@ -53,6 +57,8 @@ For example assume I have an elements folder for my elements.
         - another-element.html
         - another-element.story.js
 ```
+
+If you are using JS module types instead of an `.html` file you would have a `.js` file.
 
 ## To make a story:
 ```

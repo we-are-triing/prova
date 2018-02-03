@@ -1,7 +1,118 @@
-class ElementList extends RootElement {
+import buildShadowRoot from './buildShadowRoot.js';
+
+class ElementList extends HTMLElement {
     constructor() {
         super();
-        this.buildShadowRoot();
+        const html = `
+          <style>
+              :host {
+                  display: block;
+                  box-sizing: border-box;
+              }
+              * {
+                  box-sizing: border-box;
+              }
+              main {
+                  padding: 0.4em;
+                  overflow: hidden;
+                  height: calc(100% - 6em);
+                  position: relative;
+              }
+              .grid-container {
+                  max-height: 100%;
+                  width: 100%;
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  grid-template-rows: 20%;
+                  grid-gap: 0.5em;
+                  justify-items: stretch;
+                  align-items: stretch;
+                  justify-content: stretch;
+                  overflow: auto;
+              }
+              :host > header {
+                  text-align: center;
+                  background: transparent;
+                  padding: 0.8em;
+                  border: 1px solid var(--es-color-400);
+                  margin-bottom: 0.5em;
+                  border-radius: 0.2em;
+              }
+              .overlay header {
+                  height: 2.4em;
+                  display: grid;
+                  grid-template-columns: 1fr 5fr;
+                  background: var(--es-color-200);
+                  color: var(--es-color-600);
+                  border-bottom: 1px solid var(--es-color-400);
+              }
+              .overlay header > span {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  padding: 0.4em;
+              }
+              .close {
+                  cursor: pointer;
+                  font-size: 0.8em;
+                  border-right: 1px solid var(--es-color-400);
+                  background: var(--es-color-300);
+              }
+              .search {
+                  height: 2em;
+              }
+              .search input {
+                  display: block;
+                  height: 100%;
+                  width: 100%;
+                  border: 1px solid var(--es-color-100);
+                  font-size: 1em;
+                  outline: none;
+                  padding: 0.1em 0.4em;
+              }
+              .search input::placeholder {
+                  color: var(--es-color-400);
+              }
+              .overlay {
+                  display: none;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  height: calc(100% - 0.3em);
+                  width: 100%;
+                  background: var(--es-color-100);
+                  border: 1px solid var(--es-color-400);
+                  margin: 0.3em 0;
+
+              }
+              .overlay.active {
+                  display: block;
+              }
+              .stories {
+                  overflow: auto;
+                  height: calc(100% - 2.4em);
+              }
+          </style>
+          <header>
+              Element Storybook
+          </header>
+          <section class="search">
+              <input type="search" placeholder="filter elements" />
+          </section>
+          <main>
+              <section class="grid-container">
+                  <slot></slot>
+              </section>
+              <div class="overlay active">
+                  <header>
+                      <span class="close">list</span>
+                      <span class="title"></span>
+                  </header>
+                  <section class="stories"></section>
+              </div>
+          </main>
+        `;
+        buildShadowRoot(html, this);
         this.elems = {
             list: this.shadowRoot.querySelector('header'),
             overlay: this.shadowRoot.querySelector('.overlay'),
@@ -132,4 +243,5 @@ class ElementList extends RootElement {
         }
     }
 }
-RootElement.registerElement('element-list', ElementList);
+customElements.define('element-list', ElementList);
+export default ElementList;

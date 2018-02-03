@@ -1,7 +1,52 @@
-class ElementItem extends RootElement {
+import buildShadowRoot from './buildShadowRoot.js'
+
+class ElementItem extends HTMLElement {
     constructor() {
         super();
-        this.buildShadowRoot();
+        const html = `
+          <style>
+              :host {
+                  display: block;
+                  box-sizing: border-box;
+                  text-align: center;
+                  font-size: 0.8em;
+
+              }
+              :host([hidden]){
+                  display: none;
+              }
+              .block {
+                  display: block;
+                  width: 100%;
+                  padding-bottom: 100%;
+                  margin-bottom: 1px;
+                  box-sizing: border-box;
+                  background: var(--es-color-200);
+                  border: 1px solid var(--es-color-400);
+                  overflow: hidden;
+                  position: relative;
+                  border-radius: 0.5em;
+              }
+              .block::before{
+                  content: attr(data-element);
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  left: 0;
+                  bottom: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+              }
+              :host([active]) .block{
+                  background: var(--es-color-700);
+                  color: var(--es-color-100);
+              }
+          </style>
+          <span class="block"></span>
+        `
+        buildShadowRoot(html, this);
         this.elems = {
             block: this.shadowRoot.querySelector('.block'),
             props: [].slice.apply(this.querySelectorAll('element-properties prop-item'))
@@ -81,4 +126,5 @@ class ElementItem extends RootElement {
         }
     }
 }
-RootElement.registerElement('element-item', ElementItem);
+customElements.define('element-item', ElementItem);
+export default ElementItem;

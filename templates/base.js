@@ -47,7 +47,7 @@ class BaseTemplate {
                 <script src="${this.polyfills}/webcomponents-loader.js"></script>
                 ${
                     elements.map( (name) => (
-                        `<link rel="import" href="${this.storybookRoot}/elements/${name}/${name}.html">`
+                        `<script type="module" src="${this.storybookRoot}/elements/${name}.js"></script>`
                     )).join('')
                 }
             </head>
